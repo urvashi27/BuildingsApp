@@ -1,0 +1,45 @@
+<mat-toolbar>Buildings APP</mat-toolbar>
+<div>
+ 
+  <div class="row">
+    <form [formGroup]="buildingsForm">
+      <div class="col-md-6" style="margin:1em">
+    <mat-form-field class="example-full-width" appearance="outline">
+
+      
+
+      <mat-select (selectionChange)="onSelectBuilding($event.value)" formControlName="searchControl">
+        <mat-option *ngFor="let buildings of this.buildingsData"  [value]="buildings.id">
+          {{buildings.building}}
+        </mat-option>
+      </mat-select>
+
+    </mat-form-field>
+    </div>
+  </form>
+  </div> 
+ 
+  <div class="row" >
+    <div class="col-md-6" style="margin:1em">
+  <mat-card *ngFor="let item of selectedData" >
+    <h4>{{item.building}}</h4>
+    <p>{{item.state}}</p>
+    <p>{{item.city}}</p>
+    <p>{{item.long}}</p>
+    <p>{{item.lat}}</p>
+    <p>{{item.phon}}</p>
+    <div class="row">
+      <div class="col-sm-12">
+        <ul class="list-inline rating-list" 
+        *ngFor="let star of this.stars" style="display: inline-block" >
+          <li (click)="countStar(star)"
+              [ngClass]="{'selected': (star <= selectedValue)}">
+            <i class="fa fa-star"></i>
+          </li> 
+    </ul>
+      </div>
+    </div>
+  </mat-card>
+  </div>
+   </div>
+</div>

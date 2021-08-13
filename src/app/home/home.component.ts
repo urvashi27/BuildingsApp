@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit,ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import { PlacesService } from "../places.service";
 import {
   FormArray,
@@ -10,7 +10,7 @@ import {
 } from "@angular/forms";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-
+import * as L from 'leaflet';
 
 @Component({
   selector: "app-home",
@@ -18,6 +18,9 @@ import { HttpClient } from "@angular/common/http";
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
+  @ViewChild("mapContainer", { static:false }) mapElement: ElementRef;
+ 
+  map:L.map;
   buildingsData = [];
   buildingsForm: FormGroup;
   selectedData = [];
@@ -32,14 +35,30 @@ export class HomeComponent implements OnInit {
     private http: HttpClient
   ) {}
   filteredOptions: Observable<string[]>;
+  initMap(): void {
+    this.map = L.map(this.mapElement.nativeElement, {
+      center: [ 39.8282, -98.5795 ],
+      zoom: 3
+    });
+    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      minZoom: 3,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
+    tiles.addTo(this.map);
+  }
   ngOnInit() {
    
     this.getAllBuildings();
     this.buildingsForm = this.fb.group({
       searchControl: new FormControl("", Validators.required),
     });
-   
+  
     console.log(this.stars);
+  }
+  ngAfterViewInit(): void {
+    this.initMap();
   }
 //Api call for get buildings
   getAllBuildings() {
@@ -70,4 +89,5 @@ export class HomeComponent implements OnInit {
 
     
   }
+  
 }
